@@ -1,10 +1,20 @@
 {
   "manifest_version": 2,
-  "name": "Github",
+  "name": "Github Gists",
   "description": "",
   "version": "0.0.0",
   "browser_action": {
-    "default_popup": "popup.html"
+    "default_popup": "options.html"
   },
-  "permissions": []
+  "options_page": "options.html",
+  "content_scripts": [
+    {
+      "matches": ["https://github.com/robots.txt*"],
+      "js": ["oauth2/oauth2_inject.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "permissions": [
+    "https://github.com/"
+  ]
 }
