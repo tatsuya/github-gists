@@ -1,37 +1,71 @@
-$(function(){
+var github = new OAuth2('github', {
+  client_id: '2ad241392c1517d21515',
+  client_secret: 'b0635e6bbd6f16ce012d19bae4770da3f728b708',
+});
 
-  var authorized = $('button#github.authorized');
+// github.clearAccessToken();
 
-  if (authorized.length) {
-    console.log('authorized!');
+github.authorize(function() {
+  requestGists();
+});
 
-    var provider = window['github'];
-    var data = {
-      access_token: provider.getAccessToken()
+function requestGists() {
+  var accessToken = github.getAccessToken();
+  var gistUrl = 'https://api.github.com/gists?access_token=' + accessToken;  
+
+  // Make an XHR that creates the gists
+  var req = new XMLHttpRequest();
+  req.onreadystatechange = function(event) {
+    if (req.readyState == 4) {
+      if (req.status == 200) {
+        // Great success: parse response with JSON
+        var gists = JSON.parse(req.responseText);
+        showGists(gists);
+      } else {
+        // Request failure: something bad happend
+      }
+    }
+  }
+  req.open('GET', gistUrl, true);
+  req.send();
+}
+
+function showGists(gists) {
+  // Title
+  var title = document.createElement('h1');
+  title.innerHTML = 'Your Gists';
+
+  document.querySelector('#gists').appendChild(title);
+
+  for (var i = 0; i < gists.length; i++) {
+    var gist = gists[i];
+
+    console.log(gist);
+
+    // Get the file length
+    var files = Object.keys(gist.files).length
+
+    // Get the first filename
+    var name = '';
+    for (var key in gist.files) {
+      name = key;
+      break;
     }
 
-    get('https://api.github.com/gists', data, function(gists){
-      for (var i = 0; i < gists.length; i++) {
-        var gist = gists[i];
-        var name = '';
-        for (var key in gist.files) {
-          name = key;
-          break;
-        }
-        var html = '<div><a href="' + gist.html_url + '">' + name + '</div>';
-        $('body').append(html);
-      }
-    });
-  }
+    // Generate html
+    var div = document.createElement('div');
+    div.className = 'gist';
 
-  function get(url, data, success) {
-    $.ajax({
-      type: 'GET',
-      timeout: '5000',
-      url: url,
-      data: data,
-      success: success
-    });
-  }
+    var link = document.createElement('a');
+    link.setAttribute('href', gist.html_url);
+    link.innerHTML = name;
 
-});
+    var span = document.createElement('span');
+    span.innerHTML = '(' + files.toString() + ' files)';
+
+    div.appendChild(link);
+    div.appendChild(span);
+
+    document.querySelector('#gists').appendChild(div);
+  }
+}
