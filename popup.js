@@ -31,41 +31,52 @@ function requestGists() {
 }
 
 function showGists(gists) {
-  // Title
   var title = document.createElement('h1');
   title.innerHTML = 'Your Gists';
-
   document.querySelector('#gists').appendChild(title);
 
-  for (var i = 0; i < gists.length; i++) {
-    var gist = gists[i];
+  for (var i = 0; i < 20; i++) {
+    if (gists[i]) {
+      var gist = gists[i];
 
-    console.log(gist);
+      // Get the file length
+      var files = Object.keys(gist.files).length
 
-    // Get the file length
-    var files = Object.keys(gist.files).length
+      // Get the first filename
+      var name = '';
+      for (var key in gist.files) {
+        name = key;
+        break;
+      }
 
-    // Get the first filename
-    var name = '';
-    for (var key in gist.files) {
-      name = key;
+      // Generate html
+      var div = document.createElement('div');
+      div.className = 'gist';
+
+      var link = document.createElement('a');
+      link.setAttribute('href', gist.html_url);
+      link.innerHTML = name;
+
+      var span = document.createElement('span');
+      span.innerHTML = '(' + files.toString() + ' files)';
+
+      div.appendChild(link);
+      div.appendChild(span);
+
+      document.querySelector('#gists').appendChild(div);
+    } else {
       break;
     }
-
-    // Generate html
-    var div = document.createElement('div');
-    div.className = 'gist';
-
-    var link = document.createElement('a');
-    link.setAttribute('href', gist.html_url);
-    link.innerHTML = name;
-
-    var span = document.createElement('span');
-    span.innerHTML = '(' + files.toString() + ' files)';
-
-    div.appendChild(link);
-    div.appendChild(span);
-
-    document.querySelector('#gists').appendChild(div);
   }
+
+  var more = document.createElement('div');
+  more.id = 'more';
+
+  var moreLink = document.createElement('a');
+  moreLink.setAttribute('href', 'https://gist.github.com/');
+  moreLink.setAttribute('target', '_blank');
+  moreLink.innerHTML = 'Get more gists on Github';
+
+  more.appendChild(moreLink);
+  document.querySelector('#gists').appendChild(more);
 }
