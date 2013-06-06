@@ -1,9 +1,15 @@
 {
-  "manifest_version": 2,
   "name": "Github Gists",
-  "description": "",
   "version": "0.0.0",
+  "manifest_version": 2,
+  "description": "",
+  "icons": {
+    "16": "images/github_icon.png",
+    "48": "images/github_icon.png",
+    "128": "images/github_icon.png"
+  },
   "browser_action": {
+    "default_icon": "images/github_icon.png",
     "default_popup": "popup.html"
   },
   "content_scripts": [
