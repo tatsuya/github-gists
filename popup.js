@@ -55,6 +55,7 @@ function showGists(gists) {
 
       var link = document.createElement('a');
       link.setAttribute('href', gist.html_url);
+      link.setAttribute('target', '_blank');
       link.innerHTML = name;
 
       var span = document.createElement('span');
